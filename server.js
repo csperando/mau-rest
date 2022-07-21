@@ -37,6 +37,7 @@ app.use(express.static(__dirname + "/public"));
 app.use((req, res, next) => {
     res.statusCode = 404;
     res.setHeader("Content-Type", "text/html");
+    res.setHeader("Access-Control-Allow-Origin", "http://csperando.github.io");
     next();
 });
 
