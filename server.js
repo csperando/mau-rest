@@ -11,15 +11,23 @@ const port = process.env.PORT || "3000";
 
 
 // connect to database
-var connectionString = "mongodb://localhost:27017/MAU";
-const connect = mongoose.connect(connectionString);
-connect.then((db) => {
-    console.log(`Successfully connected to ${db.connection.name}`);
+const mongodbPassword = process.env.MONGODB_PASSWORD || "";
+if(mongodbPassword == "") {
+    // error
+    throw("OH NO!");
 
-}).catch((error) => {
-    console.error(error);
+} else {
+    var connectionString = "mongodb+srv://sa:" + mongodbPassword + "@cluster0.1lrnz.mongodb.net/MAU?retryWrites=true&w=majority";
+    const connect = mongoose.connect(connectionString);
+    connect.then((db) => {
+        console.log(`Successfully connected to ${db.connection.name}`);
 
-});
+    }).catch((error) => {
+        console.error(error);
+
+    });
+
+}
 
 
 // set up express app
