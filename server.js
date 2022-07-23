@@ -11,7 +11,7 @@ const port = process.env.PORT || "3000";
 
 
 // connect to database
-const mongodbPassword = process.env.MONGODB_PASSWORD || "";
+const mongodbPassword = process.env.MONGODB_PASSWORD || "1LoveMong0";
 if(mongodbPassword == "") {
     // error
     throw("OH NO!");
@@ -52,6 +52,8 @@ app.use((req, res, next) => {
 const mauRouter = require("./routes/mauRouter");
 app.use("/mau", mauRouter);
 
+const userRouter = require("./routes/userRouter");
+app.use("/auth", userRouter);
 
 // catch errors
 app.use((req, res, next) => {
