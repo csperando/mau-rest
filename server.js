@@ -42,7 +42,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use(express.static(__dirname + "/public"));
 app.use((req, res, next) => {
-    res.statusCode = 404;
+    res.statusCode = 200;
+    res.setHeader("X-Step-One", "true");
     res.setHeader("Content-Type", "text/html");
 
     // cors
