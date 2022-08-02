@@ -17,66 +17,36 @@ userRouter.route("/signup")
 
 })
 .post((req, res, next) => {
+    try {
+        var salt = crypto.randomBytes(32).toString("hex");
+        req.body.salt = salt;
+    } catch(error) {
+        console.error(error);
+    }
 
-    // LKJHSALKJHLFSAKJHA:KJDHLKA
+    // salt and hash password, and update the request object
+    crypto.pbkdf2(req.body.password, salt, 310000, 32, "sha256", (error, hash) => {
+        const hashedPassword = hash.toString("hex");
+        if(error) {
+            console.error(error);
+        }
 
-    // // generate salt
-    // try {
-    //     var salt = crypto.randomBytes(32).toString("hex");
-    //     req.body.salt = salt;
-    //     console.log(`generate salt: ${req.body.salt}`);
-    //
-    // } catch(error) {
-    //     console.error(error);
-    //
-    // }
-    //
-    // // salt and hash password, and update the request object
-    // const hash = crypto.pbkdf2(req.body.password, salt, 310000, 32, "sha256", (error, hash) => {
-    //     console.log(`salt hashing password: ${hash.toString("hex")}`);
-    //
-    //     if(error) {
-    //         return false;
-    //     } else {
-    //         return hash.toString("hex");
-    //     }
-    // });
-    //
-    // req.body.password = (hash) ? hash : "error";
-    // console.log(`update request with hash: ${req.body.password}`);
-    //
-    // // Check for duplicates
-    // const duplicates = User.find({username: req.body.username});
-    // duplicates.then((d) => {
-    //     console.log("Checking for duplicates");
-    //     if(d.length != 0) {
-    //         res.statusCode = 500;
-    //         throw("user already exists");
-    //     }
-    //     return d;
-    //
-    // }).then(() => {
-    //     // create new user
-    //     console.log("creating new user");
-    //     const newUser = User.create(req.body);
-    //     newUser.then((user) => {
-    //         res.statusCode = 200;
-    //         console.log("success");
-    //
-    //     }).catch((error) => {
-    //         res.statusCode = 500;
-    //         console.log("error on create");
-    //
-    //     });
-    //
-    // }).catch((error) => {
-    //     res.statusCode = 500;
-    //
-    // }).finally(() => {
-    //     console.log("all done, next");
-    //     next();
-    //
-    // });
+        req.body.password = hashedPassword;
+        const newUser = User.create(req.body);
+        newUser.then((user) => {
+            res.statusCode = 200;
+            var output = JSON.stringify(user, null, 2);
+            res.write(output);
+
+        }).catch((error) => {
+            res.statusCode = 500;
+
+        }).finally(() => {
+            next();
+
+        });
+
+    });
 
 })
 .put((req, res, next) => {
@@ -107,34 +77,30 @@ userRouter.route("/login")
             throw(message="Error getting username");
         }
 
-        const valid = crypto.pbkdf2(req.body.password, found.salt || "", 310000, 32, 'sha256', function(err, hashedPassword) {
-            // console.log(req.body.password);
+        // console.log(found[0].password);
+
+        var userSalt = found[0].salt || "";
+        crypto.pbkdf2(req.body.password, userSalt, 310000, 32, 'sha256', function(err, hashedPassword) {
             // console.log(hashedPassword.toString("hex"));
-            return found.password == hashedPassword.toString("hex");
+
+            var valid = (found[0].password == hashedPassword.toString("hex"));
+            if(valid) {
+                res.statusCode = 200;
+                res.write(`login user: ${req.body.username}`);
+            } else {
+                res.statusCode = 500;
+                res.write("bad username/password");
+            }
+
+            next();
+
         });
 
-        if(valid) {
-            return found;
-
-        } else {
-            throw("bad username or email");
-
-        }
-
-
-    }).then((found) => {
-        res.statusCode = 200;
-        res.write(`login user: ${req.body.username}`);
-
     }).catch((error) => {
-        res.statusCode = 500;
         console.error(error);
-
-    }).finally(() => {
         next();
 
     });
-
 
 })
 .put((req, res, next) => {
