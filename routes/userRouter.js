@@ -32,8 +32,13 @@ userRouter.route("/signup")
     crypto.pbkdf2(req.body.password, salt, 310000, 32, "sha256", (error, hash) => {
         const hashedPassword = hash.toString("hex");
         if(error) {
-            // console.error(error);
-            throw(message="Error hashing password");
+            res.statusCode = 500;
+            var output = {
+                statusCode: 500,
+                message: error.message
+            };
+            res.json(output);
+            next();
         }
 
         req.body.password = hashedPassword;
@@ -59,14 +64,6 @@ userRouter.route("/signup")
 
         });
 
-    }).catch((error) => {
-        res.statusCode = 500;
-        var output = {
-            statusCode: 500,
-            message: error.message
-        };
-        res.json(output);
-        next();
     });
 
 })
