@@ -12,6 +12,7 @@ userRouter.use(bodyParser.json());
 userRouter.route("/signup")
 .get((req, res, next) => {
     res.statusCode = 403;
+    res.setHeader("Content-Type", "application/json");
     res.json({
         statusCode: 403,
         message: "Not allowed."
@@ -33,6 +34,7 @@ userRouter.route("/signup")
         const hashedPassword = hash.toString("hex");
         if(error) {
             res.statusCode = 500;
+            res.setHeader("Content-Type", "application/json");
             var output = {
                 statusCode: 500,
                 message: error.message
@@ -45,6 +47,7 @@ userRouter.route("/signup")
         const newUser = User.create(req.body);
         newUser.then((user) => {
             res.statusCode = 200;
+            res.setHeader("Content-Type", "application/json");
             var output = {
                 statusCode: 200,
                 message: `Created new user: ${req.body.username}`
@@ -53,6 +56,7 @@ userRouter.route("/signup")
 
         }).catch((error) => {
             res.statusCode = 500;
+            res.setHeader("Content-Type", "application/json");
             var output = {
                 statusCode: 500,
                 message: `Error creating new user: ${error.message}`
@@ -69,6 +73,7 @@ userRouter.route("/signup")
 })
 .put((req, res, next) => {
     res.statusCode = 403;
+    res.setHeader("Content-Type", "application/json");
     res.json({
         statusCode: 403,
         message: "Not allowed."
@@ -78,6 +83,7 @@ userRouter.route("/signup")
 })
 .delete((req, res, next) => {
     res.statusCode = 403;
+    res.setHeader("Content-Type", "application/json");
     res.json({
         statusCode: 403,
         message: "Not allowed."
@@ -90,6 +96,7 @@ userRouter.route("/signup")
 userRouter.route("/login")
 .get((req, res, next) => {
     res.statusCode = 403;
+    res.setHeader("Content-Type", "application/json");
     res.json({
         statusCode: 403,
         message: "Not allowed."
@@ -113,12 +120,14 @@ userRouter.route("/login")
             var valid = (found[0].password == hashedPassword.toString("hex"));
             if(valid) {
                 res.statusCode = 200;
+                res.setHeader("Content-Type", "application/json");
                 res.json({
                     statusCode: 200,
                     message: `login user: ${req.body.username}`
                 });
             } else {
                 res.statusCode = 500;
+                res.setHeader("Content-Type", "application/json");
                 res.json({
                     statusCode: 500,
                     message: "bad username/password"
@@ -131,6 +140,8 @@ userRouter.route("/login")
 
     }).catch((error) => {
         console.error(error);
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
         res.json({
             statusCode: 500,
             message: error.message
@@ -142,6 +153,7 @@ userRouter.route("/login")
 })
 .put((req, res, next) => {
     res.statusCode = 403;
+    res.setHeader("Content-Type", "application/json");
     res.json({
         statusCode: 403,
         message: "Not allowed."
@@ -151,6 +163,7 @@ userRouter.route("/login")
 })
 .delete((req, res, next) => {
     res.statusCode = 403;
+    res.setHeader("Content-Type", "application/json");
     res.json({
         statusCode: 403,
         message: "Not allowed."
@@ -161,53 +174,30 @@ userRouter.route("/login")
 
 // userRouter.route("/logout")
 // .get((req, res, next) => {
-//     res.statusCode = 200;
-//     res.write("logged out");
-//     next();
 //
 // })
 // .post((req, res, next) => {
-//     res.statusCode = 403;
-//     res.write("not allowed");
-//     next();
 //
 // })
 // .put((req, res, next) => {
-//     res.statusCode = 403;
-//     res.write("not allowed");
-//     next();
 //
 // })
 // .delete((req, res, next) => {
-//     res.statusCode = 403;
-//     res.write("not allowed");
-//     next();
+//
 // });
 
 
 // userRouter.route("/user/:userId")
 // .get((req, res, next) => {
-//     res.statusCode = 200;
-//     res.write(`get user ${req.params.userId}`);
-//     next();
 //
 // })
 // .post((req, res, next) => {
-//     res.statusCode = 403;
-//     res.write("not allowed");
-//     next();
 //
 // })
 // .put((req, res, next) => {
-//     res.statusCode = 200;
-//     res.write(`update user ${req.params.userId}`);
-//     next();
 //
 // })
 // .delete((req, res, next) => {
-//     res.statusCode = 200;
-//     res.write(`delete user ${req.params.userId}`);
-//     next();
 //
 // });
 
