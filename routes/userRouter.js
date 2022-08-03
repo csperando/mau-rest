@@ -12,7 +12,10 @@ userRouter.use(bodyParser.json());
 userRouter.route("/signup")
 .get((req, res, next) => {
     res.statusCode = 403;
-    res.write("not allowed");
+    res.json({
+        statusCode: 403,
+        message: "Not allowed."
+    });
     next();
 
 })
@@ -21,43 +24,67 @@ userRouter.route("/signup")
         var salt = crypto.randomBytes(32).toString("hex");
         req.body.salt = salt;
     } catch(error) {
-        console.error(error);
+        // console.error(error);
+        console.error("Error creating salt");
     }
 
     // salt and hash password, and update the request object
     crypto.pbkdf2(req.body.password, salt, 310000, 32, "sha256", (error, hash) => {
         const hashedPassword = hash.toString("hex");
         if(error) {
-            console.error(error);
+            // console.error(error);
+            throw(message="Error hashing password");
         }
 
         req.body.password = hashedPassword;
         const newUser = User.create(req.body);
         newUser.then((user) => {
             res.statusCode = 200;
-            var output = JSON.stringify(user, null, 2);
-            res.write(output);
+            var output = {
+                statusCode: 200,
+                message: `Created new user: ${req.body.username}`
+            };
+            res.json(output);
 
         }).catch((error) => {
             res.statusCode = 500;
+            var output = {
+                statusCode: 500,
+                message: `Error creating new user: ${error.message}`
+            };
+            res.json(output);
 
         }).finally(() => {
             next();
 
         });
 
+    }).catch((error) => {
+        res.statusCode = 500;
+        var output = {
+            statusCode: 500,
+            message: error.message
+        };
+        res.json(output);
+        next();
     });
 
 })
 .put((req, res, next) => {
     res.statusCode = 403;
-    res.write("not allowed");
+    res.json({
+        statusCode: 403,
+        message: "Not allowed."
+    });
     next();
 
 })
 .delete((req, res, next) => {
     res.statusCode = 403;
-    res.write("not allowed");
+    res.json({
+        statusCode: 403,
+        message: "Not allowed."
+    });
     next();
 
 });
@@ -66,7 +93,10 @@ userRouter.route("/signup")
 userRouter.route("/login")
 .get((req, res, next) => {
     res.statusCode = 403;
-    res.write("not allowed");
+    res.json({
+        statusCode: 403,
+        message: "Not allowed."
+    });
     next();
 
 })
@@ -74,7 +104,7 @@ userRouter.route("/login")
     const findUser = User.find({username: req.body.username});
     findUser.then((found) => {
         if(found.length != 1) {
-            throw(message="Error getting username");
+            throw(message=`Error getting username [${req.body.username}], count: ${found.length}`);
         }
 
         // console.log(found[0].password);
@@ -86,10 +116,16 @@ userRouter.route("/login")
             var valid = (found[0].password == hashedPassword.toString("hex"));
             if(valid) {
                 res.statusCode = 200;
-                res.write(`login user: ${req.body.username}`);
+                res.json({
+                    statusCode: 200,
+                    message: `login user: ${req.body.username}`
+                });
             } else {
                 res.statusCode = 500;
-                res.write("bad username/password");
+                res.json({
+                    statusCode: 500,
+                    message: "bad username/password"
+                });
             }
 
             next();
@@ -98,6 +134,10 @@ userRouter.route("/login")
 
     }).catch((error) => {
         console.error(error);
+        res.json({
+            statusCode: 500,
+            message: error.message
+        });
         next();
 
     });
@@ -105,68 +145,74 @@ userRouter.route("/login")
 })
 .put((req, res, next) => {
     res.statusCode = 403;
-    res.write("not allowed");
+    res.json({
+        statusCode: 403,
+        message: "Not allowed."
+    });
     next();
 
 })
 .delete((req, res, next) => {
     res.statusCode = 403;
-    res.write("not allowed");
+    res.json({
+        statusCode: 403,
+        message: "Not allowed."
+    });
     next();
 });
 
 
-userRouter.route("/logout")
-.get((req, res, next) => {
-    res.statusCode = 200;
-    res.write("logged out");
-    next();
+// userRouter.route("/logout")
+// .get((req, res, next) => {
+//     res.statusCode = 200;
+//     res.write("logged out");
+//     next();
+//
+// })
+// .post((req, res, next) => {
+//     res.statusCode = 403;
+//     res.write("not allowed");
+//     next();
+//
+// })
+// .put((req, res, next) => {
+//     res.statusCode = 403;
+//     res.write("not allowed");
+//     next();
+//
+// })
+// .delete((req, res, next) => {
+//     res.statusCode = 403;
+//     res.write("not allowed");
+//     next();
+// });
 
-})
-.post((req, res, next) => {
-    res.statusCode = 403;
-    res.write("not allowed");
-    next();
 
-})
-.put((req, res, next) => {
-    res.statusCode = 403;
-    res.write("not allowed");
-    next();
-
-})
-.delete((req, res, next) => {
-    res.statusCode = 403;
-    res.write("not allowed");
-    next();
-});
-
-
-userRouter.route("/user/:userId")
-.get((req, res, next) => {
-    res.statusCode = 200;
-    res.write(`get user ${req.params.userId}`);
-    next();
-
-})
-.post((req, res, next) => {
-    res.statusCode = 403;
-    res.write("not allowed");
-    next();
-
-})
-.put((req, res, next) => {
-    res.statusCode = 200;
-    res.write(`update user ${req.params.userId}`);
-    next();
-
-})
-.delete((req, res, next) => {
-    res.statusCode = 200;
-    res.write(`delete user ${req.params.userId}`);
-    next();
-
-});
+// userRouter.route("/user/:userId")
+// .get((req, res, next) => {
+//     res.statusCode = 200;
+//     res.write(`get user ${req.params.userId}`);
+//     next();
+//
+// })
+// .post((req, res, next) => {
+//     res.statusCode = 403;
+//     res.write("not allowed");
+//     next();
+//
+// })
+// .put((req, res, next) => {
+//     res.statusCode = 200;
+//     res.write(`update user ${req.params.userId}`);
+//     next();
+//
+// })
+// .delete((req, res, next) => {
+//     res.statusCode = 200;
+//     res.write(`delete user ${req.params.userId}`);
+//     next();
+//
+// });
 
 
 module.exports = userRouter;
