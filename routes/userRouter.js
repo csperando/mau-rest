@@ -95,25 +95,12 @@ userRouter.route("/signup")
 
 userRouter.route("/login")
 .get((req, res, next) => {
-    if("u" in req) {
-        // console.log(`already logged in as ${req.u.username}`);
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json({
-            statusCode: 200,
-            message: `logged in as ${req.u.username}`,
-            data: req.u
-        });
-
-    } else {
-        res.statusCode = 403;
-        res.setHeader("Content-Type", "application/json");
-        res.json({
-            statusCode: 403,
-            message: "Not allowed."
-        });
-
-    }
+    res.statusCode = 403;
+    res.setHeader("Content-Type", "application/json");
+    res.json({
+        statusCode: 403,
+        message: "Not allowed."
+    });
     next();
 
 })
