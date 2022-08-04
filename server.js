@@ -11,7 +11,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const passport = require("passport");
 const FileStore = require("session-file-store")(session);
-
+const { auth } = require("./cookie");
 
 // get port for http server
 const port = process.env.PORT || "3000";
@@ -40,6 +40,8 @@ if(mongodbPassword == "") {
 // set up express app
 const app = express();
 app.use(bodyParser.json());
+app.use(cookieParser("cookie_secret"));
+
 app.use(express.static(__dirname + "/public"));
 app.use((req, res, next) => {
     res.statusCode = 200;
@@ -55,6 +57,8 @@ app.use((req, res, next) => {
     next();
 });
 
+// adds user obj to req if cookie data exists
+app.use(auth);
 
 // session
 app.use(session({

@@ -105,50 +105,72 @@ userRouter.route("/login")
 
 })
 .post((req, res, next) => {
-    const findUser = User.find({username: req.body.username});
-    findUser.then((found) => {
-        if(found.length != 1) {
-            throw(message=`Error getting username [${req.body.username}], count: ${found.length}`);
-        }
+    if("u" in req) {
+        // console.log(`already logged in as ${req.u.username}`);
+        res.statusCode = 403;
+        res.setHeader("Content-Type", "application/json");
+        res.json({
+            statusCode: 403,
+            message: `already logged in as ${req.u.username}`
+        });
+        next();
 
-        // console.log(found[0].password);
-
-        var userSalt = found[0].salt || "";
-        crypto.pbkdf2(req.body.password, userSalt, 310000, 32, 'sha256', function(err, hashedPassword) {
-            // console.log(hashedPassword.toString("hex"));
-
-            var valid = (found[0].password == hashedPassword.toString("hex"));
-            if(valid) {
-                res.statusCode = 200;
-                res.setHeader("Content-Type", "application/json");
-                res.json({
-                    statusCode: 200,
-                    message: `login user: ${req.body.username}`
-                });
-            } else {
-                res.statusCode = 500;
-                res.setHeader("Content-Type", "application/json");
-                res.json({
-                    statusCode: 500,
-                    message: "bad username/password"
-                });
+    } else {
+        const findUser = User.find({username: req.body.username});
+        findUser.then((found) => {
+            if(found.length != 1) {
+                throw(message=`Error getting username [${req.body.username}], count: ${found.length}`);
             }
 
+            var userSalt = found[0].salt || "";
+            crypto.pbkdf2(req.body.password, userSalt, 310000, 32, 'sha256', function(err, hashedPassword) {
+                // console.log(hashedPassword.toString("hex"));
+
+                var valid = (found[0].password == hashedPassword.toString("hex"));
+                if(valid) {
+                    res.statusCode = 200;
+                    res.setHeader("Content-Type", "application/json");
+
+                    let u = {
+                        username: found[0].username,
+                        firstName: found[0].firstName,
+                        lastName: found[0].lastName,
+                        email: found[0].email,
+                        roles: found[0].roles
+                    };
+                    res.cookie("u", JSON.stringify(u), {signed: true});
+
+                    res.json({
+                        statusCode: 200,
+                        message: `login user: ${req.body.username}`,
+                        // data: u
+                    });
+                } else {
+                    res.statusCode = 401;
+                    res.setHeader("Content-Type", "application/json");
+                    res.json({
+                        statusCode: 401,
+                        message: "bad username/password"
+                    });
+                }
+
+                next();
+
+            });
+
+        }).catch((error) => {
+            console.error(error);
+            res.statusCode = 500;
+            res.setHeader("Content-Type", "application/json");
+            res.json({
+                statusCode: 500,
+                message: error.message
+            });
             next();
 
         });
 
-    }).catch((error) => {
-        console.error(error);
-        res.statusCode = 500;
-        res.setHeader("Content-Type", "application/json");
-        res.json({
-            statusCode: 500,
-            message: error.message
-        });
-        next();
-
-    });
+    }
 
 })
 .put((req, res, next) => {
@@ -172,19 +194,58 @@ userRouter.route("/login")
 });
 
 
-// userRouter.route("/logout")
-// .get((req, res, next) => {
-//
-// })
-// .post((req, res, next) => {
-//
-// })
-// .put((req, res, next) => {
-//
-// })
-// .delete((req, res, next) => {
-//
-// });
+userRouter.route("/logout")
+.get((req, res, next) => {
+    try {
+        res.clearCookie("u");
+        delete req.u;
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json({
+            statusCode: 200,
+            message: "logged out"
+        });
+
+    } catch(e) {
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.json({
+            statusCode: 500,
+            message: e.message
+        });
+
+    } finally {
+        next();
+
+    }
+})
+.post((req, res, next) => {
+    res.statusCode = 405;
+    res.setHeader("Content-Type", "application/json");
+    res.json({
+        statusCode: 405,
+        message: "Not allowed."
+    });
+    next();
+})
+.put((req, res, next) => {
+    res.statusCode = 405;
+    res.setHeader("Content-Type", "application/json");
+    res.json({
+        statusCode: 405,
+        message: "Not allowed."
+    });
+    next();
+})
+.delete((req, res, next) => {
+    res.statusCode = 405;
+    res.setHeader("Content-Type", "application/json");
+    res.json({
+        statusCode: 405,
+        message: "Not allowed."
+    });
+    next();
+});
 
 
 // userRouter.route("/user/:userId")
