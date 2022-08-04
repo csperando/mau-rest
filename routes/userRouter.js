@@ -107,11 +107,12 @@ userRouter.route("/login")
 .post((req, res, next) => {
     if("u" in req) {
         // console.log(`already logged in as ${req.u.username}`);
-        res.statusCode = 403;
+        res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.json({
-            statusCode: 403,
-            message: `already logged in as ${req.u.username}`
+            statusCode: 200,
+            message: `already logged in as ${req.u.username}`,
+            data: req.u
         });
         next();
 
@@ -143,7 +144,7 @@ userRouter.route("/login")
                     res.json({
                         statusCode: 200,
                         message: `login user: ${req.body.username}`,
-                        // data: u
+                        data: u
                     });
                 } else {
                     res.statusCode = 401;
