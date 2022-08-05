@@ -40,20 +40,20 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser("cookie_secret"));
 
-app.use(express.static(__dirname + "/public"));
+app.use(cors);
+app.use(cookie);
+
 app.use((req, res, next) => {
     res.statusCode = 404;
     res.setHeader("X-Step-One", "true");
-    res.setHeader("Content-Type", "text/html");
-    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Content-Type", "application/json");
     res.setHeader("Access-Control-Allow-Headers", "*");
     res.setHeader("Access-Control-Allow-Methods", "OPTIONS,GET,POST");
 
     next();
 });
 
-app.use(cors);
-app.use(cookie);
+app.use(express.static(__dirname + "/public"));
 
 
 // routes

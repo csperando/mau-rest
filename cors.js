@@ -10,9 +10,11 @@ function cors(req, res, next) {
     if(allowList.indexOf(h) != -1) {
         console.log(`Request from [${h}] allowed.`);
         res.setHeader("Access-Control-Allow-Origin", h);
+        res.setHeader("origin", "vary");
 
     } else {
         console.log(`Error: hostname [${h}] is not allowed. Accepted hosts are ${JSON.stringify(allowList)}`);
+        res.setHeader("Access-Control-Allow-Origin", "*");
 
     }
 

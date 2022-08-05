@@ -6,14 +6,11 @@ function cookie(req, res, next) {
         if(req.signedCookies) {
             let u = JSON.parse(req.signedCookies.u);
             req.u = u;
-
         }
     } catch (e) {
         // console.log("error parsing cookie");
-
     } finally {
         next();
-
     }
 }
 
