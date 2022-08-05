@@ -51,7 +51,7 @@ app.use((req, res, next) => {
     // cors
     res.setHeader("Access-Control-Allow-Origin", "https://csperando.github.io");
     res.setHeader("Vary", "Origin");
-    // res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Access-Control-Allow-Headers", "*");
     res.setHeader("Access-Control-Allow-Methods", "OPTIONS,GET,POST");
 
