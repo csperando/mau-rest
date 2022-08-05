@@ -48,10 +48,12 @@ app.use((req, res, next) => {
     res.setHeader("X-Step-One", "true");
     res.setHeader("Content-Type", "text/html");
 
-    // cors
-    res.setHeader("Access-Control-Allow-Origin", "https://csperando.github.io");
-    res.setHeader("Vary", "Origin");
-    res.setHeader("Access-Control-Allow-Credentials", "true");
+    // cors TODO: figure this out
+    // res.setHeader("Access-Control-Allow-Origin", "https://csperando.github.io");
+    // res.setHeader("Vary", "Origin");
+    // res.setHeader("Access-Control-Allow-Credentials", "true");
+
+    res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "*");
     res.setHeader("Access-Control-Allow-Methods", "OPTIONS,GET,POST");
 
