@@ -106,8 +106,6 @@ userRouter.route("/login")
 })
 .post((req, res, next) => {
     if("u" in req) {
-        // console.log(req);
-        // console.log(`already logged in as ${req.u.username}`);
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.json({
