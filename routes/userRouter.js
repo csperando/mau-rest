@@ -95,10 +95,10 @@ userRouter.route("/signup")
 
 userRouter.route("/login")
 .get((req, res, next) => {
-    res.statusCode = 403;
+    res.statusCode = 405;
     res.setHeader("Content-Type", "application/json");
     res.json({
-        statusCode: 403,
+        statusCode: 405,
         message: "Not allowed."
     });
     next();
@@ -197,30 +197,42 @@ userRouter.route("/login")
 });
 
 
-userRouter.route("/logout")
+userRouter.route("/login/:uid")
 .get((req, res, next) => {
-    try {
-        res.clearCookie("u");
-        delete req.u;
+
+    const found = User.find({_id: req.params.uid});
+    found.then((users) => {
+        let u = users[0];
+        let data = {
+            username: u.username,
+            firstName: u.firstName,
+            lastName: u.lastName,
+            email: u.email,
+            roles: u.roles,
+            id: u._id
+        };
+
         res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
         res.json({
             statusCode: 200,
-            message: "logged out"
+            message: `logged in as ${u.username}`,
+            data: data
         });
 
-    } catch(e) {
+    }).catch((error) => {
+        console.error(error);
         res.statusCode = 500;
-        res.setHeader("Content-Type", "application/json");
         res.json({
             statusCode: 500,
-            message: e.message
+            message: error.message
         });
 
-    } finally {
+    }).finally(() => {
         next();
 
-    }
+    });
+
+
 })
 .post((req, res, next) => {
     res.statusCode = 405;
@@ -249,6 +261,60 @@ userRouter.route("/logout")
     });
     next();
 });
+
+
+// userRouter.route("/logout")
+// .get((req, res, next) => {
+//     try {
+//         res.clearCookie("u");
+//         delete req.u;
+//         res.statusCode = 200;
+//         res.setHeader("Content-Type", "application/json");
+//         res.json({
+//             statusCode: 200,
+//             message: "logged out"
+//         });
+//
+//     } catch(e) {
+//         res.statusCode = 500;
+//         res.setHeader("Content-Type", "application/json");
+//         res.json({
+//             statusCode: 500,
+//             message: e.message
+//         });
+//
+//     } finally {
+//         next();
+//
+//     }
+// })
+// .post((req, res, next) => {
+//     res.statusCode = 405;
+//     res.setHeader("Content-Type", "application/json");
+//     res.json({
+//         statusCode: 405,
+//         message: "Not allowed."
+//     });
+//     next();
+// })
+// .put((req, res, next) => {
+//     res.statusCode = 405;
+//     res.setHeader("Content-Type", "application/json");
+//     res.json({
+//         statusCode: 405,
+//         message: "Not allowed."
+//     });
+//     next();
+// })
+// .delete((req, res, next) => {
+//     res.statusCode = 405;
+//     res.setHeader("Content-Type", "application/json");
+//     res.json({
+//         statusCode: 405,
+//         message: "Not allowed."
+//     });
+//     next();
+// });
 
 
 // userRouter.route("/user/:userId")

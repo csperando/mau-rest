@@ -8,10 +8,10 @@ const mongoose = require("mongoose");
 
 // auth stuff
 const cookieParser = require("cookie-parser");
-const session = require("express-session");
-const passport = require("passport");
-const FileStore = require("session-file-store")(session);
 const { auth } = require("./cookie");
+// const session = require("express-session");
+// const passport = require("passport");
+// const FileStore = require("session-file-store")(session);
 
 // get port for http server
 const port = process.env.PORT || "3000";
