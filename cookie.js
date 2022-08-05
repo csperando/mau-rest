@@ -1,7 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 
-function auth(req, res, next) {
+function cookie(req, res, next) {
     try {
         if(req.signedCookies) {
             let u = JSON.parse(req.signedCookies.u);
@@ -17,4 +17,4 @@ function auth(req, res, next) {
     }
 }
 
-module.exports.auth = auth;
+module.exports = cookie;

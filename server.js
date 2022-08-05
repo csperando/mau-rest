@@ -1,4 +1,4 @@
-// essential requires
+// basic web/rest/data
 const http = require("http");
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -7,11 +7,9 @@ const mongoose = require("mongoose");
 
 
 // auth stuff
+const cors = require("./cors");
 const cookieParser = require("cookie-parser");
-const { auth } = require("./cookie");
-// const session = require("express-session");
-// const passport = require("passport");
-// const FileStore = require("session-file-store")(session);
+const cookie = require("./cookie");
 
 // get port for http server
 const port = process.env.PORT || "3000";
@@ -44,35 +42,18 @@ app.use(cookieParser("cookie_secret"));
 
 app.use(express.static(__dirname + "/public"));
 app.use((req, res, next) => {
-    res.statusCode = 200;
+    res.statusCode = 404;
     res.setHeader("X-Step-One", "true");
     res.setHeader("Content-Type", "text/html");
-
-    // cors TODO: figure this out
-    res.setHeader("Access-Control-Allow-Origin", "https://csperando.github.io");
-    // res.setHeader("Vary", "Origin");
-    // res.setHeader("Access-Control-Allow-Credentials", "true");
-
-    // res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "*");
     res.setHeader("Access-Control-Allow-Methods", "OPTIONS,GET,POST");
 
     next();
 });
 
-// adds user obj to req if cookie data exists
-app.use(auth);
-
-// // session
-// app.use(session({
-//     name: "Session-id",
-//     secret: "ChangeMe",
-//     saveUninitialized: false,
-//     resave: false,
-//     store: new FileStore()
-// }));
-//
-// app.use(passport.authenticate("session"));
+app.use(cors);
+app.use(cookie);
 
 
 // routes
