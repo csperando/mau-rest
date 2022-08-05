@@ -47,7 +47,7 @@ userRouter.route("/signup")
         const newUser = User.create(req.body);
         newUser.then((user) => {
             res.statusCode = 200;
-            
+
             var output = {
                 statusCode: 200,
                 message: `Created new user: ${req.body.username}`
@@ -124,8 +124,6 @@ userRouter.route("/login")
 
             var userSalt = found[0].salt || "";
             crypto.pbkdf2(req.body.password, userSalt, 310000, 32, 'sha256', function(err, hashedPassword) {
-                // console.log(hashedPassword.toString("hex"));
-
                 var valid = (found[0].password == hashedPassword.toString("hex"));
                 if(valid) {
                     res.statusCode = 200;
