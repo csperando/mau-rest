@@ -44,7 +44,7 @@ app.use(cookieParser("cookie_secret"));
 
 app.use(express.static(__dirname + "/public"));
 app.use((req, res, next) => {
-    res.statusCode = 200;
+    res.statusCode = 500;
     res.setHeader("X-Step-One", "true");
     res.setHeader("Content-Type", "text/html");
 
