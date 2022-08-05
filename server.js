@@ -49,8 +49,9 @@ app.use((req, res, next) => {
     res.setHeader("Content-Type", "text/html");
 
     // cors
-    // res.setHeader("Access-Control-Allow-Origin", "http://csperando.github.io");
-    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Origin", "http://csperando.github.io");
+    res.setHeader("Vary", "Origin");
+    // res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "*");
     res.setHeader("Access-Control-Allow-Methods", "OPTIONS,GET,POST");
 
@@ -60,16 +61,16 @@ app.use((req, res, next) => {
 // adds user obj to req if cookie data exists
 app.use(auth);
 
-// session
-app.use(session({
-    name: "Session-id",
-    secret: "ChangeMe",
-    saveUninitialized: false,
-    resave: false,
-    store: new FileStore()
-}));
-
-app.use(passport.authenticate("session"));
+// // session
+// app.use(session({
+//     name: "Session-id",
+//     secret: "ChangeMe",
+//     saveUninitialized: false,
+//     resave: false,
+//     store: new FileStore()
+// }));
+//
+// app.use(passport.authenticate("session"));
 
 
 // routes

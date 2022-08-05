@@ -106,6 +106,7 @@ userRouter.route("/login")
 })
 .post((req, res, next) => {
     if("u" in req) {
+        // console.log(req);
         // console.log(`already logged in as ${req.u.username}`);
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
@@ -137,7 +138,8 @@ userRouter.route("/login")
                         firstName: found[0].firstName,
                         lastName: found[0].lastName,
                         email: found[0].email,
-                        roles: found[0].roles
+                        roles: found[0].roles,
+                        id: found[0]._id
                     };
                     res.cookie("u", JSON.stringify(u), {signed: true});
 
