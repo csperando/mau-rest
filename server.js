@@ -49,7 +49,7 @@ app.use((req, res, next) => {
     res.setHeader("Content-Type", "text/html");
 
     // cors
-    res.setHeader("Access-Control-Allow-Origin", "http://csperando.github.io");
+    res.setHeader("Access-Control-Allow-Origin", "https://csperando.github.io");
     res.setHeader("Vary", "Origin");
     // res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "*");
