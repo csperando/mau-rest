@@ -37,8 +37,21 @@ if(mongodbPassword == "") {
 
 // set up express app
 const app = express();
+
+app.use(function(req, res, next) {
+    console.log("before cors");
+    console.log(req.headers);
+    next();
+});
+
 app.use(bodyParser.json());
 app.use(cors);
+
+app.use(function(req, res, next) {
+    console.log("after cors");
+    console.log(req.headers);
+    next();
+});
 
 app.use(cookieParser("cookie_secret"));
 app.use(cookie);

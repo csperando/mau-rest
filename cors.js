@@ -5,12 +5,11 @@ const allowList = ["http://localhost:5000", "http://localhost:3000", "https://cs
 
 function cors(req, res, next) {
 
-    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-    console.log("         TEST              ");
-    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-
+    // console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    // console.log("         TEST              ");
+    // console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    // console.log(req.headers);
     
-    console.log(req.headers);
     let h = ("origin" in req.headers) ? req.get("origin") : "Error: no hostname";
     let r = ("referrer" in req.headers) ? req.get("referrer") : "Error: no referrer";
 
