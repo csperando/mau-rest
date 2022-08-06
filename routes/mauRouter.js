@@ -34,7 +34,7 @@ mauRouter.route("/")
     }).catch((error) => {
         res.statusCode = 500;
         res.json({
-            statusCode: 500;
+            statusCode: 500,
             message: error.message
         });
 
