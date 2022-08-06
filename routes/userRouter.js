@@ -158,12 +158,10 @@ userRouter.route("/login")
                 });
 
             }).catch((error) => {
-                console.error(error);
-                console.log(error.message);
                 res.statusCode = 500;
                 res.json({
                     statusCode: 500,
-                    message: error.message
+                    message: error
                 });
                 next();
 
