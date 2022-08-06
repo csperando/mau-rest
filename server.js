@@ -38,12 +38,13 @@ if(mongodbPassword == "") {
 // set up express app
 const app = express();
 app.use(bodyParser.json());
-app.use(cookieParser("cookie_secret"));
-
 app.use(cors);
+
+app.use(cookieParser("cookie_secret"));
 app.use(cookie);
 
 app.use((req, res, next) => {
+    console.log("test");
     res.statusCode = 200;
     res.setHeader("X-Step-One", "true");
     res.setHeader("Content-Type", "application/json");
