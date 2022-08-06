@@ -1,5 +1,23 @@
-<p>Hello!</p>
-
-<br/>
-
-<p><a href="http://github.com/csperando/mau-rest/" rel="noreferrer">Check out the GitHub repo.</a></p>
+{
+    name: "Mau rest server",
+    description: "This is a rest server for a simple SPA I created for myself and my girlfriend. We both enjoy playing a card game called Mau, and this will allow us to keep track of our games and brag about our stats.",
+    author: "Coleman Sperando",
+    routes: [
+        {
+            path: "/mau",
+            description: "The main route for accessing all game data.",
+            methods: ["GET", "POST"]
+        },
+        {
+            path: "/auth/login",
+            description: "Login a user."
+            methods: ["POST"]
+        },
+        {
+            path: "/auth/signup",
+            description: "Signup a new user."
+            methods: ["POST"]
+        }
+    ],
+    github: "https://github.com/csperando"
+}
