@@ -120,7 +120,7 @@ userRouter.route("/login")
             const findUser = User.find({username: req.body.username});
             findUser.then((found) => {
                 if(found.length == 0) {
-                    throw(`Username [${req.body.username}] does not exist.}`);
+                    throw(`Username [${req.body.username}] does not exist.`);
                 } else if(found.length > 1) {
                     throw(`Error: duplicate [${found.length}] usernames for [${req.body.username}]. Please report a bug.`);
                 }
@@ -159,6 +159,7 @@ userRouter.route("/login")
 
             }).catch((error) => {
                 console.error(error);
+                console.log(error.message);
                 res.statusCode = 500;
                 res.json({
                     statusCode: 500,
