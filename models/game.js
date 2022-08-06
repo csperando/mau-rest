@@ -22,10 +22,10 @@ const RoundSchema = new Schema ({
         type: Number,
         required: true
     },
-    overall: {
-        type: [Number],
-        required: true
-    }
+    // overall: {
+    //     type: [Number],
+    //     required: true
+    // }
 });
 
 const gameSchema = new Schema ({
@@ -46,7 +46,8 @@ const gameSchema = new Schema ({
         required: true
     },
     rounds: {
-        type: [RoundSchema]
+        type: [RoundSchema],
+        required: true
     }
 }, {
     timestamps: true
