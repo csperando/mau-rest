@@ -33,8 +33,7 @@ mauRouter.route("/")
             statusCode: 200,
             message: "Game added successfully.",
             data: g
-        })
-        res.json(g);
+        });
 
     }).catch((error) => {
         res.statusCode = 500;
