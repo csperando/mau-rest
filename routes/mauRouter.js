@@ -29,6 +29,11 @@ mauRouter.route("/")
     const newGame = Game.create(req.body);
     newGame.then((g) => {
         res.statusCode = 200;
+        res.json({
+            statusCode: 200,
+            message: "Game added successfully.",
+            data: g
+        })
         res.json(g);
 
     }).catch((error) => {
