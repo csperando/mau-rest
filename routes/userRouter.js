@@ -105,76 +105,82 @@ userRouter.route("/login")
 
 })
 .post((req, res, next) => {
-    if("u" in req) {
-        res.statusCode = 200;
 
-        res.json({
-            statusCode: 200,
-            message: `already logged in as ${req.u.username}`,
-            data: req.u
-        });
-        next();
-
-    } else {
-        const findUser = User.find({username: req.body.username});
-        findUser.then((found) => {
-            if(found.length != 1) {
-                throw(message=`Error getting username [${req.body.username}], count: ${found.length}`);
-            }
-
-            var userSalt = found[0].salt || "";
-            crypto.pbkdf2(req.body.password, userSalt, 310000, 32, 'sha256', function(err, hashedPassword) {
-                var valid = (found[0].password == hashedPassword.toString("hex"));
-                if(valid) {
-                    res.statusCode = 200;
-
-
-                    let u = {
-                        username: found[0].username,
-                        firstName: found[0].firstName,
-                        lastName: found[0].lastName,
-                        email: found[0].email,
-                        roles: found[0].roles,
-                        id: found[0]._id
-                    };
-                    res.cookie("u", JSON.stringify(u), {signed: true});
-
-                    res.json({
-                        statusCode: 200,
-                        message: `login user: ${req.body.username}`,
-                        data: u
-                    });
-                } else {
-                    res.statusCode = 401;
-
-                    res.json({
-                        statusCode: 401,
-                        message: "bad username/password"
-                    });
-                }
-
-                next();
-
-            });
-
-        }).catch((error) => {
-            console.error(error);
-            res.statusCode = 500;
-
+    try {
+        if("u" in req) {
+            res.statusCode = 200;
             res.json({
-                statusCode: 500,
-                message: error.message
+                statusCode: 200,
+                message: `already logged in as ${req.u.username}`,
+                data: req.u
             });
             next();
 
-        });
+        } else {
+            const findUser = User.find({username: req.body.username});
+            findUser.then((found) => {
+                if(found.length == 0) {
+                    throw(`Username [${req.body.username}] does not exist.}`);
+                } else if(found.length > 1) {
+                    throw(`Error: duplicate [${found.length}] usernames for [${req.body.username}]. Please report a bug.`);
+                }
 
+                var userSalt = found[0].salt || "";
+                crypto.pbkdf2(req.body.password, userSalt, 310000, 32, 'sha256', function(err, hashedPassword) {
+                    var valid = (found[0].password == hashedPassword.toString("hex"));
+                    if(valid) {
+                        res.statusCode = 200;
+                        let u = {
+                            username: found[0].username,
+                            firstName: found[0].firstName,
+                            lastName: found[0].lastName,
+                            email: found[0].email,
+                            roles: found[0].roles,
+                            id: found[0]._id
+                        };
+                        res.cookie("u", JSON.stringify(u), {signed: true});
+
+                        res.json({
+                            statusCode: 200,
+                            message: `login user: ${req.body.username}`,
+                            data: u
+                        });
+                    } else {
+                        res.statusCode = 401;
+                        res.json({
+                            statusCode: 401,
+                            message: "bad username/password"
+                        });
+                    }
+
+                    next();
+
+                });
+
+            }).catch((error) => {
+                console.error(error);
+                res.statusCode = 500;
+                res.json({
+                    statusCode: 500,
+                    message: error.message
+                });
+                next();
+
+            });
+        }
+
+    } catch(error) {
+        res.statusCode = 500;
+        res.json({
+            statusCode: 500,
+            message: error.message
+        });
+        next();
     }
 
 })
 .put((req, res, next) => {
     res.statusCode = 403;
-
     res.json({
         statusCode: 403,
         message: "Not allowed."
