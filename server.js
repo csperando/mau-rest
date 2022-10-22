@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { MongoClient } = require("mongodb");
 const mongoose = require("mongoose");
+const compression = require("compression");
 
 
 // auth stuff
@@ -41,6 +42,7 @@ app.use(bodyParser.json());
 app.use(cors);
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(cookie);
+app.use(compression({ level: 1 }));
 
 app.use((req, res, next) => {
     res.statusCode = 200;
