@@ -71,11 +71,8 @@ app.use((req, res, next) => {
 	res.end();
 });
 
-// // start server
-// const server = http.createServer(app);
-// server.listen(port, () => {
-// 	console.log(`Server up on port ${port}`);
-// });
-
-// netlify
-module.exports.handler = serverless(app);
+// start server
+const server = http.createServer(app);
+server.listen(port, () => {
+	console.log(`Server up on port ${port}`);
+});
