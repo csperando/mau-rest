@@ -48,7 +48,7 @@ app.use((req, res, next) => {
 });
 
 // routes
-app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname + "../public"));
 
 const mauRouter = require("../routes/mauRouter");
 app.use("/mau", mauRouter);
