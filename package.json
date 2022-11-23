@@ -18,6 +18,7 @@
     "express-session": "^1.17.3",
     "mongo": "^0.1.0",
     "mongoose": "^6.4.6",
+    "netlify": "^13.0.2",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "serverless-http": "^3.1.0",
